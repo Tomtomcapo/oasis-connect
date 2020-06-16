@@ -23,7 +23,10 @@ class _ConnectionPageState extends State<MarksPage> {
   static const String marksUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Layout\\MainContent::load&codepage=MYMARKS";
 
-  Report report;
+  void initState() {
+    super.initState();
+    _report = GetMarks();
+  }
 
   Future<Report> _report;
 
@@ -143,15 +146,29 @@ class _ConnectionPageState extends State<MarksPage> {
                 alignment: Alignment.center,
                 child: DefaultTextStyle(
                   style: TextStyle(color: Colors.white),
-                  child: Column(
-                    children: <Widget>[
-                      Text("Moyenne semestre"),
-                      Text((report != null ? report.semesterAverage : "N/A"),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                      Text((report != null ? report.semesterInfo : "N/A")),
-                    ],
-                  ),
+                  child: FutureBuilder<Report>(
+                      future: _report,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          // todo errors
+                        }
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                         return  Column(
+                           children: <Widget>[
+                             Text("Moyenne semestre"),
+                             Text((snapshot.data.semesterAverage),
+                                 style: TextStyle(
+                                     fontWeight: FontWeight.bold, fontSize: 20)),
+                             Text(snapshot.data.semesterInfo + " - " + snapshot.data.marks.length.toString() + " note" + (snapshot.data.marks.length > 1 ? "s": "")),
+                           ],
+                         );
+                        }
+                      }),
+
                 ),
               ),
             ),
@@ -184,17 +201,16 @@ class _ConnectionPageState extends State<MarksPage> {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  report = snapshot.data;
                   return ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: report.marks.length,
+                      itemCount: snapshot.data.marks.length,
                       itemBuilder: (context, index) {
                         return MarkListItem(
                             mark: new Mark(
-                                mark: report.marks[index].mark,
+                                mark: snapshot.data.marks[index].mark,
                                 code: "",
-                                area: report.marks[index].area,
-                                subject: report.marks[index].subject,
+                                area: snapshot.data.marks[index].area,
+                                subject: snapshot.data.marks[index].subject,
                                 date: new DateTime(2019, 12, 13)));
                       });
                 }
