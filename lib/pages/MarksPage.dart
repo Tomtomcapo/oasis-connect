@@ -5,7 +5,9 @@ import 'package:oasisconnect/model/Mark.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:oasisconnect/model/Report.dart';
+import 'package:oasisconnect/pages/ConnectionPage.dart';
 import 'package:oasisconnect/themes/oasisTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'components/MarkListItem.dart';
 
@@ -16,10 +18,10 @@ class MarksPage extends StatefulWidget {
   static const String routeName = "/marks";
 
   @override
-  _ConnectionPageState createState() => _ConnectionPageState();
+  _MarksPageState createState() => _MarksPageState();
 }
 
-class _ConnectionPageState extends State<MarksPage> {
+class _MarksPageState extends State<MarksPage> {
   static const String marksUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Layout\\MainContent::load&codepage=MYMARKS";
 
@@ -114,7 +116,14 @@ class _ConnectionPageState extends State<MarksPage> {
                 leading: const Icon(Icons.exit_to_app),
                 title: Text('Se deconnecter'),
                 onTap: () {
-                  Navigator.pop(context);
+
+                  SharedPreferences.getInstance().then((prefs) {
+                    prefs.setBool('autoconnect', false);
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, ConnectionPage.routeName);
+                  });
+
+
                 },
               ),
               Padding(

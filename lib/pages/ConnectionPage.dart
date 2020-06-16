@@ -4,20 +4,35 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:oasisconnect/Session.dart';
 import 'package:oasisconnect/pages/MarksPage.dart';
 import 'package:http/http.dart' as http;
+import 'package:oasisconnect/themes/oasisTheme.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ConnectionPage extends StatelessWidget {
+class ConnectionPage extends StatefulWidget {
   ConnectionPage({Key key, this.title}) : super(key: key);
-
   final String title;
-  bool stayLogged = false;
   static const String routeName = "/login";
 
+  _ConnectionPageState createState() => _ConnectionPageState();
+}
+
+class _ConnectionPageState extends State<ConnectionPage> {
   static const String loginUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Connection\\User::login";
   final storage = FlutterSecureStorage();
+
+  bool stayLogged = false;
+
+  void _onStayLoggedChanged(bool newValue) => setState(() {
+    stayLogged = newValue;
+
+    if (stayLogged) {
+      // TODO: Here goes your functionality that remembers the user.
+    } else {
+      // TODO: Forget the user
+    }
+  });
 
   // Future to connect
   Future<http.Response> PushLogin(String username, String password) async {
@@ -128,7 +143,7 @@ class ConnectionPage extends StatelessWidget {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(title),
+        title: Text("Connexion à OASIS"),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -164,10 +179,10 @@ class ConnectionPage extends StatelessWidget {
 
                 CheckboxListTile(
                   value: stayLogged,
-                  onChanged: (bool value) => stayLogged = value,
+                  onChanged: _onStayLoggedChanged,
                   title: new Text('Rester connecté'),
                   controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: Colors.red,
+                  activeColor: OasisTheme.defaultTheme.primaryColor,
                 ),
 
                 Padding(
@@ -175,10 +190,15 @@ class ConnectionPage extends StatelessWidget {
                   child: RaisedButton(
                     onPressed: () {
                       // Perform user connection and store credentials if needed.
-                      var storeCredentials =
-                      true; // todo: make this user-defined and not temporary.
-                      Connect(usernameController.text, passwordController.text, context,
-                          storeCredentials: storeCredentials);
+                      var storeCredentials = stayLogged;
+
+                      SharedPreferences.getInstance().then((prefs) {
+                        prefs.setBool('autoconnect', stayLogged);
+
+                        // Connect the user
+                        Connect(usernameController.text, passwordController.text, context,
+                            storeCredentials: storeCredentials);
+                      });
                     },
                     child: Text('Se connecter'),
                   ),
@@ -190,4 +210,5 @@ class ConnectionPage extends StatelessWidget {
       ),
     );
   }
+
 }
