@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:oasisconnect/Session.dart';
+import 'package:oasisconnect/main.dart';
 import 'package:oasisconnect/model/Mark.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -74,10 +76,11 @@ class _MarksPageState extends State<MarksPage> {
         } catch (e) {
           markValue = -1.0;
         }
+
         var mark = Mark(
             area: markElement[0].text.trimRight(),
             subject: markElement[1].text.trimRight(),
-            date: new DateTime(2020, 1, 1),
+            date: DateFormat.yMMMMd(APP_LOCALE).parse(markElement[2].text.trim()),
             mark: markValue);
         marks.add(mark);
       }
@@ -224,7 +227,7 @@ class _MarksPageState extends State<MarksPage> {
                                 code: "",
                                 area: snapshot.data.marks[index].area,
                                 subject: snapshot.data.marks[index].subject,
-                                date: new DateTime(2019, 12, 13)));
+                                date: snapshot.data.marks[index].date));
                       });
                 }
               }),

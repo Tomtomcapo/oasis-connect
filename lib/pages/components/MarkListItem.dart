@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oasisconnect/model/Mark.dart';
 
+import '../../main.dart';
+
 class MarkListItem extends StatelessWidget {
   const MarkListItem({
     this.mark
@@ -63,7 +65,7 @@ class MarkListItem extends StatelessWidget {
                   ),
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(DateFormat.yMMMMEEEEd().format(mark.date),
+                      child: Text(DateFormat.yMMMMd(APP_LOCALE).format(mark.date),
                           style: const TextStyle(
                             color: Colors.black54,
                           )))
