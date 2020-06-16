@@ -22,16 +22,10 @@ class _ConnectionPageState extends State<ConnectionPage> {
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Connection\\User::login";
   final storage = FlutterSecureStorage();
 
-  bool stayLogged = false;
+  bool stayLogged = true;
 
   void _onStayLoggedChanged(bool newValue) => setState(() {
     stayLogged = newValue;
-
-    if (stayLogged) {
-      // TODO: Here goes your functionality that remembers the user.
-    } else {
-      // TODO: Forget the user
-    }
   });
 
   // Future to connect
