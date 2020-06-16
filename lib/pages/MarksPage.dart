@@ -45,8 +45,12 @@ class _MarksPageState extends State<MarksPage> {
       var classSemesterAverage = "semesterAverage";
       var classSemesterAverageElement =
           document.getElementsByClassName(classSemesterAverage).first;
-      var semesterAverage =
-          classSemesterAverageElement.text.trim().replaceAll(",", ".");
+      var semesterAverage;
+      try {
+        semesterAverage = double.parse(classSemesterAverageElement.text.trim().replaceAll(",", "."));
+      } catch (e) {
+        semesterAverage = -1.0;
+      }
 
       // Semester info
       var classSemesterInfo = "semesterInfo";
@@ -169,7 +173,7 @@ class _MarksPageState extends State<MarksPage> {
                          return  Column(
                            children: <Widget>[
                              Text("Moyenne semestre"),
-                             Text((snapshot.data.semesterAverage),
+                             Text(snapshot.data.semesterAverage.toStringAsFixed(3),
                                  style: TextStyle(
                                      fontWeight: FontWeight.bold, fontSize: 20)),
                              Text(snapshot.data.semesterInfo + " - " + snapshot.data.marks.length.toString() + " note" + (snapshot.data.marks.length > 1 ? "s": "")),

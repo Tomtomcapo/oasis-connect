@@ -10,6 +10,6 @@ class Report extends Object {
 
   final List<Mark> marks;
   final List<Mark> averages;
-  final String semesterAverage;
+  final double semesterAverage;
   final String semesterInfo;
 }
