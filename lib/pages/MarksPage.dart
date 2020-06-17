@@ -24,13 +24,22 @@ class MarksPage extends StatefulWidget {
   _MarksPageState createState() => _MarksPageState();
 }
 
-enum Sort { date_asc, date_desc, mark_asc, mark_desc, name_asc, name_desc }
+/// Sorting mathods enumeration.
+enum SortingMethods {
+  date_asc,
+  date_desc,
+  mark_asc,
+  mark_desc,
+  name_asc,
+  name_desc
+}
 
 class _MarksPageState extends State<MarksPage> {
   static const String marksUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Layout\\MainContent::load&codepage=MYMARKS";
 
-  Sort _sortMethod = Sort.date_desc;
+  /// Selected sorting method
+  SortingMethods _sortMethod = SortingMethods.date_desc;
   Future<Report> _report;
 
   void initState() {
@@ -38,6 +47,7 @@ class _MarksPageState extends State<MarksPage> {
     _report = GetMarks();
   }
 
+  /// Handle popup menu click by user.
   void handlePopupClick(String value) {
     switch (value) {
       case 'Trier':
@@ -107,30 +117,29 @@ class _MarksPageState extends State<MarksPage> {
         marks.add(mark);
       }
 
-      print("TRI : ");
-
       // Sort marks
       switch (_sortMethod) {
-        case Sort.date_asc:
+        case SortingMethods.date_asc:
           marks.sort((a, b) => a.date.compareTo(b.date));
           break;
-        case Sort.date_desc:
+        case SortingMethods.date_desc:
           marks.sort((a, b) => b.date.compareTo(a.date));
           break;
-        case Sort.mark_asc:
+        case SortingMethods.mark_asc:
           marks.sort((a, b) => a.mark.compareTo(b.mark));
           break;
-        case Sort.mark_desc:
+        case SortingMethods.mark_desc:
           marks.sort((a, b) => b.mark.compareTo(a.mark));
           break;
-        case Sort.name_asc:
+        case SortingMethods.name_asc:
           marks.sort((a, b) => a.area.compareTo(b.area));
           break;
-        case Sort.name_desc:
+        case SortingMethods.name_desc:
           marks.sort((a, b) => b.area.compareTo(a.area));
           break;
       }
 
+      // Generate the report.
       return new Report(
           marks: marks,
           semesterAverage: semesterAverage,
@@ -151,74 +160,74 @@ class _MarksPageState extends State<MarksPage> {
           RadioListTile(
             title: Text("Par matière (A-Z)"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.name_asc,
+            value: SortingMethods.name_asc,
           ),
           RadioListTile(
             title: Text("Par matière (Z-A)"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.name_desc,
+            value: SortingMethods.name_desc,
           ),
           RadioListTile(
             title: Text("Du + vieux au + récent"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.date_asc,
+            value: SortingMethods.date_asc,
           ),
           RadioListTile(
             title: Text("Du + récent au + vieux"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.date_desc,
+            value: SortingMethods.date_desc,
           ),
           RadioListTile(
             title: Text("Par note (croissant)"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.mark_asc,
+            value: SortingMethods.mark_asc,
           ),
           RadioListTile(
             title: Text("Par note (décroissant)"),
             groupValue: _sortMethod,
-            onChanged: (Sort value) {
+            onChanged: (SortingMethods value) {
               setState(() {
                 _sortMethod = value;
                 _report = GetMarks();
                 Navigator.pop(context);
               });
             },
-            value: Sort.mark_desc,
+            value: SortingMethods.mark_desc,
           ),
         ],
       ),
@@ -236,7 +245,7 @@ class _MarksPageState extends State<MarksPage> {
             PopupMenuButton<String>(
               onSelected: handlePopupClick,
               itemBuilder: (BuildContext context) {
-                return {'Trier', 'Actualiser', 'Partager'}.map((String choice) {
+                return {'Trier', 'Actualiser'}.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Text(choice),
