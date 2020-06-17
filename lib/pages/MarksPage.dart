@@ -40,6 +40,12 @@ class _MarksPageState extends State<MarksPage> {
 
   void handleClick(String value) {
     switch (value) {
+      case 'Trier':
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => _buildSortDialog(context),
+        );
+        break;
       case 'Actualiser':
         setState(() {
           _report = GetMarks();
@@ -136,6 +142,92 @@ class _MarksPageState extends State<MarksPage> {
     }
   }
 
+  /// Show sorting dialog
+  Widget _buildSortDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('Trier mes notes'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          RadioListTile(
+            title: Text("Par matière (A-Z)"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.name_asc,
+          ),
+          RadioListTile(
+            title: Text("Par matière (Z-A)"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.name_desc,
+          ),
+          RadioListTile(
+            title: Text("Du + vieux au + récent"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.date_asc,
+          ),
+          RadioListTile(
+            title: Text("Du + récent au + vieux"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.date_desc,
+          ),
+          RadioListTile(
+            title: Text("Par note (croissant)"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.mark_asc,
+          ),
+          RadioListTile(
+            title: Text("Par note (décroissant)"),
+            groupValue: _sortMethod,
+            onChanged: (Sort value) {
+              setState(() {
+                _sortMethod = value;
+                _report = GetMarks();
+                Navigator.pop(context);
+              });
+            },
+            value: Sort.mark_desc,
+          ),
+        ],
+      ),
+      actions: <Widget>[],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,129 +235,10 @@ class _MarksPageState extends State<MarksPage> {
         appBar: AppBar(
           title: Text("Mes notes"),
           actions: <Widget>[
-            PopupMenuButton(
-              child: const Icon(Icons.sort),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.name_asc,
-                      ),
-                      Text("Par matière (A à Z)"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.name_desc,
-                      ),
-                      Text("Par matière (Z à A)"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.date_asc,
-                      ),
-                      Text("Du plus récent au plus vieux"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.date_desc,
-                      ),
-                      Text("Du plus vieux au plus récent"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.mark_asc,
-                      ),
-                      Text("Par note (croissant)"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Radio(
-                        groupValue: _sortMethod,
-                        onChanged: (Sort value) {
-                          setState(() {
-                            _sortMethod = value;
-                            _report = GetMarks();
-                          });
-                        },
-                        value: Sort.mark_desc,
-                      ),
-                      Text("Par note (décroissant)"),
-                    ],
-                  ),
-                ),
-              ],
-            ),
             PopupMenuButton<String>(
               onSelected: handleClick,
               itemBuilder: (BuildContext context) {
-                return {'Actualiser', 'Partager'}.map((String choice) {
+                return {'Trier', 'Actualiser', 'Partager'}.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Text(choice),
@@ -331,7 +304,7 @@ class _MarksPageState extends State<MarksPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           const Icon(Icons.report_problem),
-                          Text("Un erreur est survenue."),
+                          Text("Une erreur est survenue."),
                           Text("Impossible de charger la liste des notes."),
                           Text('Cause : "' + snapshot.error.toString() + '"'),
                         ],
@@ -344,18 +317,22 @@ class _MarksPageState extends State<MarksPage> {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data.marks.length,
-                      itemBuilder: (context, index) {
-                        return MarkListItem(
-                            mark: new Mark(
-                                mark: snapshot.data.marks[index].mark,
-                                code: "",
-                                area: snapshot.data.marks[index].area,
-                                subject: snapshot.data.marks[index].subject,
-                                date: snapshot.data.marks[index].date));
-                      });
+                  return RefreshIndicator(
+                    onRefresh: GetMarks,
+                    backgroundColor: OasisTheme.defaultTheme.primaryColor,
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data.marks.length,
+                        itemBuilder: (context, index) {
+                          return MarkListItem(
+                              mark: new Mark(
+                                  mark: snapshot.data.marks[index].mark,
+                                  code: "",
+                                  area: snapshot.data.marks[index].area,
+                                  subject: snapshot.data.marks[index].subject,
+                                  date: snapshot.data.marks[index].date));
+                        }),
+                  );
                 }
               }),
         ));

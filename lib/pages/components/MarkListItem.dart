@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oasisconnect/model/Mark.dart';
+import 'package:oasisconnect/themes/oasisTheme.dart';
+import 'package:share/share.dart';
 
 import '../../main.dart';
 
@@ -23,7 +25,7 @@ class MarkListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: <Widget>[
             Expanded(
                 flex: 6,
@@ -47,7 +49,7 @@ class MarkListItem extends StatelessWidget {
                           )))
                 ])),
             Container(
-              height: 62,
+              //height: 62,
               width: 76,
               child: Align(
                 alignment: Alignment.center,
@@ -73,9 +75,14 @@ class MarkListItem extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(
-              Icons.more_vert,
-              size: 16.0,
+            IconButton(
+              icon: Icon(Icons.share),
+              color: Colors.black45,
+              iconSize: 20,
+              tooltip: 'Increase volume by 10',
+              onPressed: () {
+                Share.share("J'ai eu la note de ${mark.mark} en ${mark.area} !");
+              },
             ),
           ],
         ),
