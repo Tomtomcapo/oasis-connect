@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:oasisconnect/model/Report.dart';
 import 'package:oasisconnect/pages/ConnectionPage.dart';
+import 'package:oasisconnect/pages/components/SideMenu.dart';
 import 'package:oasisconnect/themes/oasisTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,16 +24,31 @@ class MarksPage extends StatefulWidget {
   _MarksPageState createState() => _MarksPageState();
 }
 
+enum Sort { date_asc, date_desc, mark_asc, mark_desc, name_asc, name_desc }
+
 class _MarksPageState extends State<MarksPage> {
   static const String marksUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Layout\\MainContent::load&codepage=MYMARKS";
+
+  Sort _sortMethod = Sort.date_desc;
+  Future<Report> _report;
 
   void initState() {
     super.initState();
     _report = GetMarks();
   }
 
-  Future<Report> _report;
+  void handleClick(String value) {
+    switch (value) {
+      case 'Actualiser':
+        setState(() {
+          _report = GetMarks();
+        });
+        break;
+      case 'Partager':
+        break;
+    }
+  }
 
   // Future to get marks
   Future<Report> GetMarks() async {
@@ -49,7 +65,8 @@ class _MarksPageState extends State<MarksPage> {
           document.getElementsByClassName(classSemesterAverage).first;
       var semesterAverage;
       try {
-        semesterAverage = double.parse(classSemesterAverageElement.text.trim().replaceAll(",", "."));
+        semesterAverage = double.parse(
+            classSemesterAverageElement.text.trim().replaceAll(",", "."));
       } catch (e) {
         semesterAverage = -1.0;
       }
@@ -80,9 +97,34 @@ class _MarksPageState extends State<MarksPage> {
         var mark = Mark(
             area: markElement[0].text.trimRight(),
             subject: markElement[1].text.trimRight(),
-            date: DateFormat.yMMMMd(APP_LOCALE).parse(markElement[2].text.trim()),
+            date:
+                DateFormat.yMMMMd(APP_LOCALE).parse(markElement[2].text.trim()),
             mark: markValue);
         marks.add(mark);
+      }
+
+      print("TRI : ");
+
+      // Sort marks
+      switch (_sortMethod) {
+        case Sort.date_asc:
+          marks.sort((a, b) => a.date.compareTo(b.date));
+          break;
+        case Sort.date_desc:
+          marks.sort((a, b) => b.date.compareTo(a.date));
+          break;
+        case Sort.mark_asc:
+          marks.sort((a, b) => a.mark.compareTo(b.mark));
+          break;
+        case Sort.mark_desc:
+          marks.sort((a, b) => b.mark.compareTo(a.mark));
+          break;
+        case Sort.name_asc:
+          marks.sort((a, b) => a.area.compareTo(b.area));
+          break;
+        case Sort.name_desc:
+          marks.sort((a, b) => b.area.compareTo(a.area));
+          break;
       }
 
       return new Report(
@@ -97,59 +139,138 @@ class _MarksPageState extends State<MarksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('OASIS Connect'),
-                decoration: BoxDecoration(
-                  color: OasisTheme.defaultTheme.primaryColor,
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.format_list_numbered),
-                title: Text('Mes notes'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                color: Colors.black26,
-                indent: 10,
-                endIndent: 10,
-              ),
-              ListTile(
-                leading: const Icon(Icons.exit_to_app),
-                title: Text('Se deconnecter'),
-                onTap: () {
-
-                  SharedPreferences.getInstance().then((prefs) {
-                    prefs.setBool('autoconnect', false);
-                    Navigator.pop(context);
-                    Navigator.pushReplacementNamed(context, ConnectionPage.routeName);
-                  });
-
-
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text("Version 1.0.0"), // todo: make this dynamic
-              )
-            ],
-          ),
-        ),
+        drawer: SideMenu(),
         appBar: AppBar(
           title: Text("Mes notes"),
           actions: <Widget>[
-            // action button
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                setState(() {
-                  _report = GetMarks();
-                });
+            PopupMenuButton(
+              child: const Icon(Icons.sort),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.name_asc,
+                      ),
+                      Text("Par matière (A à Z)"),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.name_desc,
+                      ),
+                      Text("Par matière (Z à A)"),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.date_asc,
+                      ),
+                      Text("Du plus récent au plus vieux"),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.date_desc,
+                      ),
+                      Text("Du plus vieux au plus récent"),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.mark_asc,
+                      ),
+                      Text("Par note (croissant)"),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Radio(
+                        groupValue: _sortMethod,
+                        onChanged: (Sort value) {
+                          setState(() {
+                            _sortMethod = value;
+                            _report = GetMarks();
+                          });
+                        },
+                        value: Sort.mark_desc,
+                      ),
+                      Text("Par note (décroissant)"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            PopupMenuButton<String>(
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {'Actualiser', 'Partager'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
               },
             ),
           ],
@@ -173,18 +294,24 @@ class _MarksPageState extends State<MarksPage> {
                             child: CircularProgressIndicator(),
                           );
                         } else {
-                         return  Column(
-                           children: <Widget>[
-                             Text("Moyenne semestre"),
-                             Text(snapshot.data.semesterAverage.toStringAsFixed(3),
-                                 style: TextStyle(
-                                     fontWeight: FontWeight.bold, fontSize: 20)),
-                             Text(snapshot.data.semesterInfo + " - " + snapshot.data.marks.length.toString() + " note" + (snapshot.data.marks.length > 1 ? "s": "")),
-                           ],
-                         );
+                          return Column(
+                            children: <Widget>[
+                              Text("Moyenne semestre"),
+                              Text(
+                                  snapshot.data.semesterAverage
+                                      .toStringAsFixed(3),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              Text(snapshot.data.semesterInfo +
+                                  " - " +
+                                  snapshot.data.marks.length.toString() +
+                                  " note" +
+                                  (snapshot.data.marks.length > 1 ? "s" : "")),
+                            ],
+                          );
                         }
                       }),
-
                 ),
               ),
             ),

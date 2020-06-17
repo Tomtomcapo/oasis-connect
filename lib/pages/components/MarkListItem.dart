@@ -65,7 +65,7 @@ class MarkListItem extends StatelessWidget {
                     padding: const EdgeInsets.all(7.0),
                     child: Text(mark.mark < 0.0 ? "N/A" : mark.mark.toStringAsFixed(1),
                         style: const TextStyle(
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w600,
                           fontSize: 24.0,
                           color:  Colors.black54,
                         )),
