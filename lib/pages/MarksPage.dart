@@ -38,7 +38,7 @@ class _MarksPageState extends State<MarksPage> {
     _report = GetMarks();
   }
 
-  void handleClick(String value) {
+  void handlePopupClick(String value) {
     switch (value) {
       case 'Trier':
         showDialog(
@@ -50,8 +50,6 @@ class _MarksPageState extends State<MarksPage> {
         setState(() {
           _report = GetMarks();
         });
-        break;
-      case 'Partager':
         break;
     }
   }
@@ -236,7 +234,7 @@ class _MarksPageState extends State<MarksPage> {
           title: Text("Mes notes"),
           actions: <Widget>[
             PopupMenuButton<String>(
-              onSelected: handleClick,
+              onSelected: handlePopupClick,
               itemBuilder: (BuildContext context) {
                 return {'Trier', 'Actualiser', 'Partager'}.map((String choice) {
                   return PopupMenuItem<String>(
