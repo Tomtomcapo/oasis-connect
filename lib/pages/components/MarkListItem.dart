@@ -81,7 +81,7 @@ class MarkListItem extends StatelessWidget {
               iconSize: 20,
               tooltip: 'Increase volume by 10',
               onPressed: () {
-                Share.share("J'ai eu la note de ${mark.mark} en ${mark.area} !");
+                Share.share("J'ai eu la note de ${mark.mark} en ${mark.area} sur l'évaluation ${mark.subject} !");
               },
             ),
           ],
