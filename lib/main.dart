@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo Login',
+          title: 'Oasis Connect',
           theme: theme,
           home: ConnectionPage(title: 'Connexion à OASIS'),
           routes: routes,
