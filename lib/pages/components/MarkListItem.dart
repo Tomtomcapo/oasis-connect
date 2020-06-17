@@ -15,40 +15,16 @@ class MarkListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1.8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      elevation: 1.2,
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: 62,
-              width: 76,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1.0,
-                        color: Colors.black38,
-                      ),
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(6.0)
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(mark.mark < 0.0 ? "N/A" : mark.mark.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 24.0,
-                            color:  Colors.black54,
-                          )),
-                    ),
-                  ),
-                ),
-              ),
             Expanded(
                 flex: 6,
                 child: Column(children: <Widget>[
@@ -70,6 +46,33 @@ class MarkListItem extends StatelessWidget {
                             color: Colors.black54,
                           )))
                 ])),
+            Container(
+              height: 62,
+              width: 76,
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0.5,
+                      color: Colors.black26,
+                    ),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(8.0)
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(7.0),
+                    child: Text(mark.mark < 0.0 ? "N/A" : mark.mark.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24.0,
+                          color:  Colors.black54,
+                        )),
+                  ),
+                ),
+              ),
+            ),
             const Icon(
               Icons.more_vert,
               size: 16.0,
