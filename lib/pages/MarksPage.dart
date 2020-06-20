@@ -35,6 +35,7 @@ enum SortingMethods {
 }
 
 class _MarksPageState extends State<MarksPage> {
+
   static const String marksUrl =
       "https://oasis.polytech.universite-paris-saclay.fr/prod/bo/core/Router/Ajax/ajax.php?targetProject=oasis_polytech_paris&route=BO\\Layout\\MainContent::load&codepage=MYMARKS";
 
@@ -62,6 +63,13 @@ class _MarksPageState extends State<MarksPage> {
         });
         break;
     }
+  }
+
+  Future<Null> _handleRefresh() async {
+    setState(() {
+      _report = GetMarks();
+    });
+    return null;
   }
 
   // Future to get marks
@@ -325,7 +333,7 @@ class _MarksPageState extends State<MarksPage> {
                   );
                 } else {
                   return RefreshIndicator(
-                    onRefresh: GetMarks,
+                    onRefresh: _handleRefresh,
                     backgroundColor: OasisTheme.defaultTheme.primaryColor,
                     child: ListView.builder(
                         scrollDirection: Axis.vertical,

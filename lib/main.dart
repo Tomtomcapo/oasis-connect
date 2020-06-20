@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:oasisconnect/routes.dart';
-import 'package:intl/intl.dart';  //for date format
 import 'package:intl/date_symbol_data_local.dart';  //for date locale
 
 import 'pages/ConnectionPage.dart';
@@ -9,9 +8,12 @@ import 'themes/oasisTheme.dart';
 
 const APP_LOCALE = "fr_FR";
 
+class Application {
+  static String version;
+}
+
 void main() {
   initializeDateFormatting(APP_LOCALE, null).then((_) => runApp(MyApp()));
-
 }
 
 

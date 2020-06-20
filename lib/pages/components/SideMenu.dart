@@ -47,7 +47,7 @@ class SideMenu extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Text("Version 1.1.0"), // todo: make this dynamic
+            child: Text("Version 1.1.1"), // todo: make this dynamic
           )
         ],
       ),
