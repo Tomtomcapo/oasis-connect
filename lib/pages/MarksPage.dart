@@ -101,7 +101,7 @@ class _MarksPageState extends State<MarksPage> {
 
       // Marks
       List<Mark> marks = [];
-      var idMarksTable = "Tests12019";
+      var idMarksTable = "Tests12020";
       var marksTable = document
           .getElementById(idMarksTable)
           .getElementsByTagName("tbody")
